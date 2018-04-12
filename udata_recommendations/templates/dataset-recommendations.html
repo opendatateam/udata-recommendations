@@ -1,0 +1,14 @@
+<div id="dataset-recommendations" class="hidden-xs">
+    <h3>{{ _('See also') }}</h3>
+    <div id="dataset-recommendations-container" class="card-list card-list--columned">
+        {% for dataset in recommendations[:2] %}
+            <div class="col-xs-12 col-md-6"
+                 data-track-content
+                 data-content-name="dataset recommendations"
+                 data-content-piece="reco {{ loop.idx }}"
+                 data-content-target="datasets/{{ dataset.id }}">
+                {% include theme('dataset/card.html') with context %}
+            </div>
+        {% endfor %}
+    </div>
+</div>
