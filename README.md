@@ -30,7 +30,7 @@ RECOMMENDATIONS_DATASETS_SOURCE_URL = 'http://path/to/recommendations.json'
 Then run the command to fetch recommendations:
 
 ```shell
-udata recommendations fill_for_datasets
+udata recommendations datasets
 ```
 
 ## Expectations
