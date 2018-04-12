@@ -83,7 +83,7 @@ def process_dataset(idx, dataset):
               help='The source URL to get recommendations from')
 @click.option('-c', '--clean', is_flag=True, default=True,
               help='Cleanup existing recommendations')
-def fill_for_datasets(source, clean):
+def datasets(source, clean):
     if clean:
         clean_datasets_recommendations()
     nb_datasets = 0

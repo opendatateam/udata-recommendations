@@ -12,10 +12,7 @@ MOCK_URL = 'http://reco.net'
 
 @pytest.fixture
 def datasets():
-    ds1 = DatasetFactory()
-    ds2 = DatasetFactory()
-    ds3 = DatasetFactory()
-    return ds1, ds2, ds3
+    return DatasetFactory.create_batch(3)
 
 
 @pytest.fixture
@@ -23,6 +20,7 @@ def mock_response(datasets):
     ds1, ds2, ds3 = datasets
     return [
         {
+            # invalid ID, should not crash the command
             "id": "1",
             "recommendations": [
                 {
@@ -31,6 +29,8 @@ def mock_response(datasets):
             ]
         },
         {
+            # valid ID and recos, expect for third element
+            # should process two elements w/o crashing
             "id": str(ds2.id),
             "recommendations": [
                 {
@@ -45,10 +45,12 @@ def mock_response(datasets):
             ]
         },
         {
+            # empty recos, should not crash the command
             "id": str(ds3.id),
             "recommendations": []
         },
         {
+            # invalid schema, should not crash the command
             "dataset": "xxx"
         }
     ]
@@ -59,7 +61,7 @@ def test_dataset_reco_command(cli, rmock, mock_response, datasets):
     ds1, ds2, ds3 = datasets
     ds4 = DatasetFactory(extras={'recommendations': ['xxx']})
     rmock.get(MOCK_URL, json=mock_response)
-    result = cli('recommendations fill_for_datasets')
+    result = cli('recommendations datasets')
     assert 'Dataset recommendations filled for 1 dataset' in result.output
     # previous recommendations have been cleaned up
     ds4.reload()

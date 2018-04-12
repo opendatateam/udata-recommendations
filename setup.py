@@ -104,7 +104,7 @@ setup(
     long_description=long_description,
     url='https://github.com/opendatateam/udata-recommendations',
     author='Opendata Team',
-    author_email='opendatateam@data.gouv.fr',
+    author_email='contact@opendata.team',
     packages=find_packages(),
     include_package_data=True,
     install_requires=install_requires,
