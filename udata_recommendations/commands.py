@@ -47,6 +47,11 @@ def get_datasets_data(url):
     return data
 
 
+def get_dataset(id_or_slug):
+    obj = Dataset.objects(slug=id_or_slug).first()
+    return obj or Dataset.objects.get(id=id_or_slug)
+
+
 def process_dataset(idx, dataset):
     if 'id' not in dataset or 'recommendations' not in dataset:
         error(' '.join(('Bad response from source for item #%s,',
@@ -54,7 +59,7 @@ def process_dataset(idx, dataset):
               % idx)
         return 0
     try:
-        dataset_obj = Dataset.objects.get(id=dataset['id'])
+        dataset_obj = get_dataset(dataset['id'])
     except (Dataset.DoesNotExist, mongoengine.errors.ValidationError):
         error('Dataset %s not found' % dataset['id'])
         return 0
@@ -62,10 +67,10 @@ def process_dataset(idx, dataset):
     valid_recos = []
     for reco in dataset['recommendations']:
         try:
-            Dataset.objects.get(id=reco['id'])
-            valid_recos.append(reco['id'])
+            reco_dataset_obj = get_dataset(reco['id'])
+            valid_recos.append(str(reco_dataset_obj.id))
         except (Dataset.DoesNotExist, mongoengine.errors.ValidationError):
-            error('Recommended dataset %s not found' % dataset['id'])
+            error('Recommended dataset %s not found' % reco['id'])
             continue
     if len(valid_recos):
         success('Found %s recommendations for dataset %s.' % (
