@@ -2,7 +2,7 @@
 
 ## Current (in progress)
 
-- Nothing yet
+- Migrate to python3 🐍 [#18](https://github.com/opendatateam/udata-recommendations/pull/18)
 
 ## 1.0.0 (2018-06-06)
 
