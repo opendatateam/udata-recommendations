@@ -5,8 +5,8 @@ jobs:
   build:
     docker:
       - image: udata/circleci:2-alpine
-      - image: mongo:3.6
-      - image: redis
+      - image: circleci/mongo:3.6-stretch-ram
+      - image: redis:alpine
       - image: udata/elasticsearch:2.4.5
     environment:
        BASH_ENV: /root/.bashrc
@@ -29,7 +29,6 @@ jobs:
             virtualenv venv
             source venv/bin/activate
             pip install -r requirements/develop.pip || pip install -r requirements/develop.pip
-
       - save_cache:
           key: py3-cache-v1-{{ checksum "python.deps" }}
           paths:
