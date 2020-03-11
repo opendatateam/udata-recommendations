@@ -4,9 +4,9 @@ version: 2
 jobs:
   build:
     docker:
-      - image: udata/circleci
-      - image: mongo:3.2
-      - image: redis
+      - image: udata/circleci:2-alpine
+      - image: circleci/mongo:3.6-stretch-ram
+      - image: redis:alpine
       - image: udata/elasticsearch:2.4.5
     environment:
        BASH_ENV: /root/.bashrc
@@ -20,21 +20,22 @@ jobs:
           command: export BASE_BRANCH=$(base_branch)
       - restore_cache:
           keys:
-          - py-cache-v8-{{ checksum "python.deps" }}
-          - py-cache-v8-{{ .Branch }}
-          - py-cache-v8-{{ .Environment.BASE_BRANCH }}
+          - py3-cache-v1-{{ checksum "python.deps" }}
+          - py3-cache-v1-{{ .Branch }}
+          - py3-cache-v1-{{ .Environment.BASE_BRANCH }}
       - run:
           name: Install python dependencies
           command: |
             virtualenv venv
             source venv/bin/activate
+            pip install -e . || pip install -e .
             pip install -r requirements/develop.pip || pip install -r requirements/develop.pip
       - save_cache:
-          key: py-cache-v8-{{ checksum "python.deps" }}
+          key: py3-cache-v1-{{ checksum "python.deps" }}
           paths:
           - venv
       - save_cache:
-          key: py-cache-v8-{{ .Branch }}
+          key: py3-cache-v1-{{ .Branch }}
           paths:
           - venv
       - run:
@@ -63,7 +64,7 @@ jobs:
 
   publish:
     docker:
-      - image: udata/circleci
+      - image: udata/circleci:2-alpine
     steps:
       - attach_workspace:
           at: .
@@ -76,15 +77,13 @@ jobs:
 
   github:
     docker:
-      - image: udata/circleci
-    environment:
-       BASH_ENV: /root/.bashrc
+      - image: apihackers/ghr
     steps:
       - attach_workspace:
           at: .
       - run:
           name: Upload github release
-          command: gh_release
+          command: -t ${GITHUB_OAUTH_TOKEN} ${CIRCLE_TAG} dist
 
 workflows:
   version: 2
@@ -92,6 +91,14 @@ workflows:
     jobs:
       - build:
           filters:
+            branches:
+              only:
+                - master
+                - /[0-9]+(\.[0-9]+)+/
+                - /pull/[0-9]+/
+                - /pyup-update-.+/
+                - l10n_master
+                - /py3(-.*)?/
             tags:
               only: /v[0-9]+(\.[0-9]+)*/
       - publish:

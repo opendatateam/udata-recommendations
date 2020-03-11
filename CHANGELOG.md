@@ -2,7 +2,8 @@
 
 ## Current (in progress)
 
-- Nothing yet
+- udata 2.0 / Python 3 support [#95](https://github.com/opendatateam/udata-recommendations/pull/95)
+- Support new hooks format [#96](https://github.com/opendatateam/udata-recommendations/pull/96)
 
 ## 1.0.1 (2018-08-03)
 
