@@ -1,5 +1,9 @@
 # Changelog
 
+## Current (in progress)
+
+- Nothing yet
+
 ## 2.0.0 (2020-03-11)
 
 - udata 2.0 / Python 3 support [#95](https://github.com/opendatateam/udata-recommendations/pull/95)
