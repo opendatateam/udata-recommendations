@@ -6,13 +6,13 @@ In our case ([data.gouv.fr][]), it's a set of scripts living here https://github
 
 ## Compatibility
 
-**udata-recommendations** requires Python 2.7+ and [uData][].
+**udata-recommendations** requires Python 3.7+ and [uData][].
 
 ## Installation
 
 Install [uData][].
 
-Remain in the same virtual environment (for Python) and use the same version of npm (for JS).
+Remain in the same virtual environment (for Python).
 
 Install **udata-recommendations**:
 
@@ -38,17 +38,19 @@ udata recommendations datasets
 This plugin expects the following format to provide datasets recommendations:
 
 ```json
-{
-    "id": "dataset-id",
-    "recommendations": [
-        {
-            "id": "dataset-recommended-1"
-        },
-        {
-            "id": "dataset-recommended-2"
-        }
-    ]
-}
+[
+   {
+      "id":"dataset-id",
+      "recommendations":[
+         {
+            "id":"dataset-recommended-1"
+         },
+         {
+            "id":"dataset-recommended-2"
+         }
+      ]
+   }
+]
 ```
 
 [uData]: https://github.com/opendatateam/udata
