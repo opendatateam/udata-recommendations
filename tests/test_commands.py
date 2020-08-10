@@ -58,7 +58,7 @@ def test_dataset_reco_command(cli, rmock, mock_response, datasets):
     ds1, ds2, ds3 = datasets
     ds4 = DatasetFactory(extras={'recommendations': ['xxx']})
     rmock.get(MOCK_URL, json=mock_response)
-    result = cli('recommendations datasets')
+    result = cli('recommendations datasets --clean')
     assert 'Dataset recommendations filled for 1 dataset' in result.output
     # previous recommendations have been cleaned up
     ds4.reload()
