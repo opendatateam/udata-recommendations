@@ -83,7 +83,7 @@ def process_dataset(idx, dataset):
 @recommendations.command()
 @click.option('-s', '--source', default=None,
               help='The source URL to get recommendations from')
-@click.option('-c', '--clean', is_flag=True, default=True,
+@click.option('-c', '--clean', is_flag=True, default=False,
               help='Cleanup existing recommendations')
 def datasets(source, clean):
     if clean:
