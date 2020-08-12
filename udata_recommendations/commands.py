@@ -24,7 +24,7 @@ def recommendations():
 
 
 def clean_datasets_recommendations(source):
-    log.info(f'Cleaning up dataset recommendations from source {source}...')
+    log.info(f'Cleaning up dataset recommendations from source {source}')
 
     datasets = Dataset.objects.filter(**{
         'extras__recommendations:sources__contains': source,
@@ -135,7 +135,7 @@ def datasets(url, source):
         return
 
     if url is None or source is None:
-        exit_with_error('You should specify a source and a URL.')
+        exit_with_error('You should specify a source and a URL')
 
     try:
         log.info(f'Fetching dataset recommendations from {url}, source {source}')
