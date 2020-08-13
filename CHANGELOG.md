@@ -2,7 +2,7 @@
 
 ## Current (in progress)
 
-- Nothing yet
+- Add score to recommendations and support multiple recommendation sources [#142](https://github.com/opendatateam/udata-recommendations/pull/142)
 
 ## 2.0.0 (2020-03-11)
 
