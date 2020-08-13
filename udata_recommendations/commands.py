@@ -124,22 +124,23 @@ def clean(source):
 @recommendations.command()
 @click.option('-u', '--url', default=None, help='The URL to get recommendations from')
 @click.option('-s', '--source', default=None, help='The source name associated with this URL')
-def add(url, source):
+@click.option('--clean', is_flag=True, help='Clean recommendations before fetching recommendations')
+def add(url, source, clean):
     use_config = url is None and source is None
+
     if use_config:
-        for source, url in current_app.config.get('RECOMMENDATIONS_SOURCES').items():
-            log.info(f'Fetching dataset recommendations from {url}, source {source}')
-            try:
-                process_source(source, get_recommendations_data(url))
-            except jsonschema.exceptions.ValidationError as e:
-                error(f"Fetched data is invalid {str(e)}")
-        return
+        sources = current_app.config.get('RECOMMENDATIONS_SOURCES')
+    else:
+        if url is None or source is None:
+            exit_with_error('You should specify a source and a URL')
 
-    if url is None or source is None:
-        exit_with_error('You should specify a source and a URL')
+        sources = {source: url}
 
-    try:
+    for source, url in sources.items():
+        if clean:
+            clean_datasets_recommendations(source)
         log.info(f'Fetching dataset recommendations from {url}, source {source}')
-        process_source(source, get_recommendations_data(url))
-    except jsonschema.exceptions.ValidationError as e:
-        exit_with_error(f"Fetched data is invalid {str(e)}")
+        try:
+            process_source(source, get_recommendations_data(url))
+        except jsonschema.exceptions.ValidationError as e:
+            exit_with_error(f"Fetched data is invalid {str(e)}")

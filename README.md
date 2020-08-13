@@ -52,6 +52,15 @@ You can also specify a source and a URL to import one-off recommendations.
 udata recommendations add --url https://example.com/recommendations.json --source my-source
 ```
 
+**Cleaning recommendations before import**
+
+If you want to clean recommendations before importing new ones, you can add the `--clean` flag to your commands.
+
+```shell
+udata recommendations add --clean
+udata recommendations add --url https://example.com/recommendations.json --source my-source --clean
+```
+
 ### Deleting recommendations
 
 You can delete recommendations made by a specific source through a command.

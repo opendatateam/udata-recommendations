@@ -129,16 +129,62 @@ def test_datasets_recommendations_invalid_data(cli, mock_invalid_response, rmock
     result = cli(f'recommendations add -s fake_source -u {MOCK_URL}', check=False)
 
     assert result.exit_code == -1
-    assert result.exit_code == -1
     assert "Fetched data is invalid" in result.output
+
+
+def test_datasets_recommendations_valid_data(cli, mock_response, rmock, datasets):
+    ds1, ds2, ds3 = datasets
+    rmock.get(MOCK_URL, json=mock_response)
+
+    cli(f'recommendations add -s fake_source -u {MOCK_URL}')
+
+    # Correct recommendations have been filled
+    ds2.reload()
+    assert ds2.extras['recommendations:sources'] == ['fake_source']
+    assert ds2.extras['recommendations'] == [
+        {'id': str(ds1.id), 'source': 'fake_source', 'score': 2},
+        {'id': str(ds3.id), 'source': 'fake_source', 'score': 1},
+    ]
+
+    # Invalid recommendations have not been filled
+    ds1.reload()
+    ds3.reload()
+    assert ds1.extras == {}
+    assert ds3.extras == {}
+
+
+def test_datasets_recommendations_valid_data_clean(cli, mock_response, rmock, datasets):
+    ds1, ds2, ds3 = datasets
+    rmock.get(MOCK_URL, json=mock_response)
+
+    ds1.extras['recommendations:sources'] = ['fake_source']
+    ds1.extras['recommendations'] = [
+        {'id': str(ds2.id), 'source': 'fake_source', 'score': 100}
+    ]
+    ds1.save()
+
+    cli(f'recommendations add -s fake_source -u {MOCK_URL} --clean')
+
+    # Correct recommendations have been filled
+    ds2.reload()
+    assert ds2.extras['recommendations:sources'] == ['fake_source']
+    assert ds2.extras['recommendations'] == [
+        {'id': str(ds1.id), 'source': 'fake_source', 'score': 2},
+        {'id': str(ds3.id), 'source': 'fake_source', 'score': 1},
+    ]
+
+    # Previous recommendations have been cleaned
+    ds1.reload()
+    assert ds1.extras == {}
 
 
 @pytest.mark.options(RECOMMENDATIONS_SOURCES={'fake_source': MOCK_URL})
 def test_datasets_recommendations_invalid_data_in_config(cli, mock_invalid_response, rmock):
     rmock.get(MOCK_URL, json=mock_invalid_response)
 
-    result = cli(f'recommendations add')
-    assert result.exit_code == 0  # Command did not crash but outputs an error
+    result = cli(f'recommendations add', check=False)
+
+    assert result.exit_code == -1
     assert "Fetched data is invalid" in result.output
 
 
@@ -165,7 +211,7 @@ def test_datasets_recommendations_from_config_empty_db(cli, rmock, mock_response
 
 
 @pytest.mark.options(RECOMMENDATIONS_SOURCES={'fake_source': MOCK_URL})
-def test_datasets_recommendations_from_config_(cli, rmock, mock_response, datasets):
+def test_datasets_recommendations_from_config(cli, rmock, mock_response, datasets):
     ds1, ds2, ds3 = datasets
     ds4 = DatasetFactory()
     rmock.get(MOCK_URL, json=mock_response)
@@ -194,3 +240,29 @@ def test_datasets_recommendations_from_config_(cli, rmock, mock_response, datase
         {'id': str(ds1.id), 'source': 'fake_source', 'score': 2},
         {'id': str(ds3.id), 'source': 'fake_source', 'score': 1},
     ]
+
+
+@pytest.mark.options(RECOMMENDATIONS_SOURCES={'fake_source': MOCK_URL})
+def test_datasets_recommendations_from_config_clean(cli, mock_response, rmock, datasets):
+    ds1, ds2, ds3 = datasets
+    rmock.get(MOCK_URL, json=mock_response)
+
+    ds1.extras['recommendations:sources'] = ['fake_source']
+    ds1.extras['recommendations'] = [
+        {'id': str(ds2.id), 'source': 'fake_source', 'score': 100}
+    ]
+    ds1.save()
+
+    cli(f'recommendations add --clean')
+
+    # Correct recommendations have been filled
+    ds2.reload()
+    assert ds2.extras['recommendations:sources'] == ['fake_source']
+    assert ds2.extras['recommendations'] == [
+        {'id': str(ds1.id), 'source': 'fake_source', 'score': 2},
+        {'id': str(ds3.id), 'source': 'fake_source', 'score': 1},
+    ]
+
+    # Previous recommendations have been cleaned
+    ds1.reload()
+    assert ds1.extras == {}
