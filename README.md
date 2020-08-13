@@ -64,19 +64,28 @@ This plugin expects the following format to provide datasets recommendations:
 
 ```json
 [
-   {
-      "id":"dataset-id",
-      "recommendations":[
-         {
-            "id":"dataset-recommended-1",
-            "score":100
-         },
-         {
-            "id":"dataset-recommended-2",
-            "score":1
-         }
-      ]
-   }
+  {
+    "id": "dataset-id",
+    "recommendations": [
+      {
+        "id": "dataset-slug-1",
+        "score": 100
+      },
+      {
+        "id": "5ef1fe80f50446b8f41ba691",
+        "score": 1
+      }
+    ]
+  },
+  {
+    "id": "dataset-id2",
+    "recommendations": [
+      {
+        "id": "5ef1fe80f50446b8f41ba691",
+        "score": 50
+      }
+    ]
+  }
 ]
 ```
 
