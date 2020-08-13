@@ -2,8 +2,6 @@ import pytest
 
 from udata.core.dataset.factories import DatasetFactory
 
-pytestmark = pytest.mark.options(plugins=['recommendations'])
-
 MOCK_URL = 'http://reco.net'
 
 
