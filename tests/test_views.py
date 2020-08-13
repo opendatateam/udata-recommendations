@@ -29,7 +29,6 @@ class TestViews:
 
     @pytest.mark.options(RECOMMENDATIONS_NB_RECOMMENDATIONS=2)
     def test_view_dataset_with_recommendations(self, datasets):
-        g.lang_code = 'fr'
         ds1, ds2, ds3 = datasets
         dataset = DatasetFactory(extras={
             'recommendations': [
@@ -47,7 +46,6 @@ class TestViews:
 
     @pytest.mark.options(RECOMMENDATIONS_NB_RECOMMENDATIONS=2)
     def test_view_dataset_with_recommendations_dedupe(self, datasets):
-        g.lang_code = 'fr'
         ds1, ds2, ds3 = datasets
         dataset = DatasetFactory(extras={
             'recommendations': [
@@ -66,7 +64,6 @@ class TestViews:
 
     @pytest.mark.options(RECOMMENDATIONS_NB_RECOMMENDATIONS=2)
     def test_view_dataset_without_enough_recommendations(self, datasets):
-        g.lang_code = 'fr'
         ds1, _, _ = datasets
         dataset = DatasetFactory(extras={
             'recommendations': [
