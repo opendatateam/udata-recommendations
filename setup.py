@@ -71,6 +71,9 @@ setup(
         'udata.commands': [
             'recommendations = udata_recommendations.commands:recommendations',
         ],
+        'udata.tasks': [
+            'recommendations = udata_recommendations.tasks',
+        ],
     },
     license='LGPL',
     zip_safe=False,
