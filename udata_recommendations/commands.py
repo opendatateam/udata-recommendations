@@ -9,7 +9,7 @@ import jsonschema
 
 from flask import current_app
 
-from udata.commands import cli, success, exit_with_error, error
+from udata.commands import cli, exit_with_error
 from udata.core.dataset.models import Dataset
 
 log = logging.getLogger(__name__)
@@ -22,8 +22,6 @@ def recommendations():
 
 
 def clean_datasets_recommendations(source):
-    log.info(f'Cleaning up dataset recommendations from source {source}')
-
     datasets = Dataset.objects.filter(**{
         'extras__recommendations:sources__contains': source,
     })
@@ -50,7 +48,7 @@ def clean_datasets_recommendations(source):
         dataset.extras['recommendations'] = new_recommendations
         dataset.save()
 
-    success(f"Cleaned up {len(datasets)} dataset(s)")
+    log.info(f"Cleaned up {len(datasets)} dataset(s)")
 
 
 def get_recommendations_data(url):
@@ -82,7 +80,7 @@ def process_dataset(source, dataset):
     try:
         target_dataset = get_dataset(dataset['id'])
     except (Dataset.DoesNotExist, mongoengine.errors.ValidationError):
-        error(f"Dataset {dataset['id']} not found")
+        log.error(f"Dataset {dataset['id']} not found")
         return
 
     log.info(f"Processing recommendations for dataset {dataset['id']}")
@@ -96,10 +94,10 @@ def process_dataset(source, dataset):
                 'source': source,
             })
         except (Dataset.DoesNotExist, mongoengine.errors.ValidationError):
-            error(f"Recommended dataset {reco['id']} not found")
+            log.error(f"Recommended dataset {reco['id']} not found")
             continue
     if len(valid_recos):
-        success(f"Found {len(valid_recos)} new recommendations for dataset {dataset['id']}")
+        log.info(f"Found {len(valid_recos)} new recommendations for dataset {dataset['id']}")
 
         new_sources = set(target_dataset.extras.get('recommendations:sources', []))
         new_sources.add(source)
@@ -112,7 +110,17 @@ def process_dataset(source, dataset):
         target_dataset.extras['recommendations'] = new_recommendations
         target_dataset.save()
     else:
-        error(f"No recommendation found for dataset {dataset['id']}")
+        log.error(f"No recommendation found for dataset {dataset['id']}")
+
+
+def process_sources(sources, should_clean):
+    for source, url in sources.items():
+        if should_clean:
+            log.info(f'Cleaning up dataset recommendations from source {source}')
+            clean_datasets_recommendations(source)
+
+        log.info(f'Fetching dataset recommendations from {url}, source {source}')
+        process_source(source, get_recommendations_data(url))
 
 
 @recommendations.command()
@@ -136,11 +144,7 @@ def add(url, source, clean):
 
         sources = {source: url}
 
-    for source, url in sources.items():
-        if clean:
-            clean_datasets_recommendations(source)
-        log.info(f'Fetching dataset recommendations from {url}, source {source}')
-        try:
-            process_source(source, get_recommendations_data(url))
-        except jsonschema.exceptions.ValidationError as e:
-            exit_with_error(f"Fetched data is invalid {str(e)}")
+    try:
+        process_sources(sources, clean)
+    except jsonschema.exceptions.ValidationError as e:
+        exit_with_error(f"Fetched data is invalid {str(e)}")

@@ -95,8 +95,7 @@ def test_clean_source(cli):
         ]
     })
 
-    result = cli('recommendations clean foo')
-    assert 'Cleaned up 2 dataset(s)' in result.output
+    cli('recommendations clean foo')
 
     ds.reload()
     assert ds.extras == {
