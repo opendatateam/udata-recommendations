@@ -1,3 +1,4 @@
+{% if recommendations %}
 <div id="dataset-recommendations" class="hidden-xs">
     <h3>{{ _('See also') }}</h3>
     <div id="dataset-recommendations-container" class="card-list card-list--columned">
@@ -12,3 +13,4 @@
         {% endfor %}
     </div>
 </div>
+{% endif %}

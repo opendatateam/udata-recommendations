@@ -79,3 +79,16 @@ class TestViews:
 
         assert NB_RECOMMENDATIONS == 2
         assert ds1.full_title in content
+
+    def test_view_dataset_deleted_recommendations(self, datasets):
+        ds1, _, _ = datasets
+
+        dataset = DatasetFactory(extras={
+            'recommendations': [
+                {'id': str(ds1.id), 'score': 100, 'source': 'dummy'},
+            ]
+        })
+
+        ds1.delete()
+
+        assert "" == render_hook(dataset=dataset)
