@@ -132,7 +132,7 @@ def test_datasets_recommendations_invalid_data(cli, mock_invalid_response, rmock
     assert "Fetched data is invalid" in result.output
 
 
-@pytest.mark.options(RECOMMENDATIONS_DATASETS={'fake_source': MOCK_URL})
+@pytest.mark.options(RECOMMENDATIONS_SOURCES={'fake_source': MOCK_URL})
 def test_datasets_recommendations_invalid_data_in_config(cli, mock_invalid_response, rmock):
     rmock.get(MOCK_URL, json=mock_invalid_response)
 
@@ -141,7 +141,7 @@ def test_datasets_recommendations_invalid_data_in_config(cli, mock_invalid_respo
     assert "Fetched data is invalid" in result.output
 
 
-@pytest.mark.options(RECOMMENDATIONS_DATASETS={'fake_source': MOCK_URL})
+@pytest.mark.options(RECOMMENDATIONS_SOURCES={'fake_source': MOCK_URL})
 def test_datasets_recommendations_from_config_empty_db(cli, rmock, mock_response, datasets):
     ds1, ds2, ds3 = datasets
     rmock.get(MOCK_URL, json=mock_response)
@@ -163,7 +163,7 @@ def test_datasets_recommendations_from_config_empty_db(cli, rmock, mock_response
     assert ds3.extras == {}
 
 
-@pytest.mark.options(RECOMMENDATIONS_DATASETS={'fake_source': MOCK_URL})
+@pytest.mark.options(RECOMMENDATIONS_SOURCES={'fake_source': MOCK_URL})
 def test_datasets_recommendations_from_config_(cli, rmock, mock_response, datasets):
     ds1, ds2, ds3 = datasets
     ds4 = DatasetFactory()

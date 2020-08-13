@@ -126,7 +126,7 @@ def clean(source):
 def datasets(url, source):
     use_config = url is None and source is None
     if use_config:
-        for source, url in current_app.config.get('RECOMMENDATIONS_DATASETS').items():
+        for source, url in current_app.config.get('RECOMMENDATIONS_SOURCES').items():
             log.info(f'Fetching dataset recommendations from {url}, source {source}')
             try:
                 process_source(source, get_recommendations_data(url))
