@@ -1,6 +1,6 @@
 import logging
 import json
-from pathlib import Path
+import importlib
 
 import click
 import mongoengine
@@ -13,8 +13,6 @@ from udata.commands import cli, success, exit_with_error, error
 from udata.core.dataset.models import Dataset
 
 log = logging.getLogger(__name__)
-
-SCHEMA_FILENAME = 'schema.json'
 
 
 @cli.group()
@@ -60,7 +58,10 @@ def get_recommendations_data(url):
     response.raise_for_status()
     data = response.json()
 
-    with open(Path(__file__).parent / SCHEMA_FILENAME) as f:
+    with importlib.resources.path('udata_recommendations', 'schema.json') as p:
+        schema_path = p
+
+    with open(schema_path) as f:
         schema = json.load(f)
     jsonschema.validate(instance=data, schema=schema)
 
@@ -123,7 +124,7 @@ def clean(source):
 @recommendations.command()
 @click.option('-u', '--url', default=None, help='The URL to get recommendations from')
 @click.option('-s', '--source', default=None, help='The source name associated with this URL')
-def datasets(url, source):
+def add(url, source):
     use_config = url is None and source is None
     if use_config:
         for source, url in current_app.config.get('RECOMMENDATIONS_SOURCES').items():

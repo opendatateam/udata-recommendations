@@ -4,8 +4,6 @@ from flask import render_template_string, g
 
 from udata.core.dataset.factories import DatasetFactory
 
-from udata_recommendations.views import NB_RECOMMENDATIONS
-
 
 def render_hook(dataset):
     return render_template_string(
@@ -29,6 +27,7 @@ class TestViews:
     def test_view_dataset_no_extras(self):
         assert '' == render_hook(dataset=DatasetFactory(extras={}))
 
+    @pytest.mark.options(RECOMMENDATIONS_NB_RECOMMENDATIONS=2)
     def test_view_dataset_with_recommendations(self, datasets):
         g.lang_code = 'fr'
         ds1, ds2, ds3 = datasets
@@ -42,11 +41,11 @@ class TestViews:
 
         content = render_hook(dataset=dataset)
 
-        assert NB_RECOMMENDATIONS == 2
         assert ds1.full_title in content
         assert ds2.full_title in content
         assert ds3.full_title not in content
 
+    @pytest.mark.options(RECOMMENDATIONS_NB_RECOMMENDATIONS=2)
     def test_view_dataset_with_recommendations_dedupe(self, datasets):
         g.lang_code = 'fr'
         ds1, ds2, ds3 = datasets
@@ -61,11 +60,11 @@ class TestViews:
         content = render_hook(dataset=dataset)
 
         assert content.count(ds1.full_title) == 1
-        assert NB_RECOMMENDATIONS == 2
         assert ds1.full_title in content
         assert ds2.full_title not in content
         assert ds3.full_title in content
 
+    @pytest.mark.options(RECOMMENDATIONS_NB_RECOMMENDATIONS=2)
     def test_view_dataset_without_enough_recommendations(self, datasets):
         g.lang_code = 'fr'
         ds1, _, _ = datasets
@@ -77,9 +76,9 @@ class TestViews:
 
         content = render_hook(dataset=dataset)
 
-        assert NB_RECOMMENDATIONS == 2
         assert ds1.full_title in content
 
+    @pytest.mark.options(RECOMMENDATIONS_NB_RECOMMENDATIONS=4)
     def test_view_dataset_deleted_recommendations(self, datasets):
         ds1, _, _ = datasets
 

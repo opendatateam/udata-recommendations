@@ -1,4 +1,4 @@
-from flask import Blueprint
+from flask import Blueprint, current_app
 
 from udata import theme
 
@@ -13,7 +13,10 @@ NB_RECOMMENDATIONS = 2
 
 def has_recommendations(ctx):
     dataset = ctx['dataset']
-    return dataset and len(dataset.extras.get('recommendations', []))
+    if not dataset:
+        return False
+    recommendations = dataset.extras.get('recommendations', [])
+    return recommendations and len(recommendations) > 0
 
 
 @template_hook('dataset.display.after-description', when=has_recommendations)
@@ -21,9 +24,9 @@ def dataset_recommendations(ctx):
     reco_ids = []
     recommendations = ctx['dataset'].extras['recommendations']
 
-    # Get at most NB_RECOMMENDATIONS unique recommendations
+    # Get at most n unique recommendations
     # Recommendations are already sorted by score in desc order
-    while len(reco_ids) < NB_RECOMMENDATIONS:
+    while len(reco_ids) < current_app.config.get('RECOMMENDATIONS_NB_RECOMMENDATIONS'):
         try:
             recommendation = recommendations.pop(0)
             if recommendation['id'] not in reco_ids:

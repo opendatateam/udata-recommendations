@@ -65,8 +65,9 @@ def mock_response(datasets):
 
 
 @pytest.mark.usefixtures('clean_db')
-def test_clean_source(cli, datasets):
-    _ = datasets
+def test_clean_source(cli):
+    # Create 3 datasets that should be left untouched
+    DatasetFactory.create_batch(3)
 
     ds = DatasetFactory(extras={
         'recommendations:sources': ['foo', 'bar'],
@@ -113,11 +114,11 @@ def test_clean_source(cli, datasets):
 
 
 def test_datasets_recommendations_wrong_args(cli):
-    result = cli('recommendations datasets -u https://example.com', check=False)
+    result = cli('recommendations add -u https://example.com', check=False)
     assert result.exit_code == -1
     assert "You should specify a source and a URL" in result.output
 
-    result = cli('recommendations datasets -s fake_source', check=False)
+    result = cli('recommendations add -s fake_source', check=False)
     assert result.exit_code == -1
     assert "You should specify a source and a URL" in result.output
 
@@ -125,7 +126,7 @@ def test_datasets_recommendations_wrong_args(cli):
 def test_datasets_recommendations_invalid_data(cli, mock_invalid_response, rmock):
     rmock.get(MOCK_URL, json=mock_invalid_response)
 
-    result = cli(f'recommendations datasets -s fake_source -u {MOCK_URL}', check=False)
+    result = cli(f'recommendations add -s fake_source -u {MOCK_URL}', check=False)
 
     assert result.exit_code == -1
     assert result.exit_code == -1
@@ -136,7 +137,7 @@ def test_datasets_recommendations_invalid_data(cli, mock_invalid_response, rmock
 def test_datasets_recommendations_invalid_data_in_config(cli, mock_invalid_response, rmock):
     rmock.get(MOCK_URL, json=mock_invalid_response)
 
-    result = cli(f'recommendations datasets')
+    result = cli(f'recommendations add')
     assert result.exit_code == 0  # Command did not crash but outputs an error
     assert "Fetched data is invalid" in result.output
 
@@ -146,7 +147,7 @@ def test_datasets_recommendations_from_config_empty_db(cli, rmock, mock_response
     ds1, ds2, ds3 = datasets
     rmock.get(MOCK_URL, json=mock_response)
 
-    result = cli('recommendations datasets')
+    result = cli('recommendations add')
 
     # Correct recommendations have been filled
     ds2.reload()
@@ -174,7 +175,7 @@ def test_datasets_recommendations_from_config_(cli, rmock, mock_response, datase
     ]
     ds2.save()
 
-    cli('recommendations datasets')
+    cli('recommendations add')
 
     # Recommendations have been merged, new source has been added
     ds2.reload()

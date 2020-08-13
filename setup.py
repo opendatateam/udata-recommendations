@@ -56,6 +56,7 @@ setup(
     author='Opendata Team',
     author_email='contact@opendata.team',
     packages=find_packages(),
+    package_data={'udata_recommendations': ['schema.json']},
     python_requires='>=3.7',
     include_package_data=True,
     install_requires=install_requires,

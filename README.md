@@ -2,9 +2,9 @@
 
 This plugin acts as a bridge between uData and a recommendation system.
 
-In our case ([data.gouv.fr][]), it's a set of scripts living here https://github.com/etalab/datasets_reco.
+In our case ([data.gouv.fr][]), it's a set of scripts living here https://github.com/etalab/piwik-covisits.
 
-Recommendations are stored on datasets. Recommendations can come from various sources and are stored in a descending order, according to the provided score (from 1 to 100). The top 2 recommendations are displayed at the bottom on the dataset page.
+Recommendations are stored on datasets. Recommendations can come from various sources and are stored in a descending order, according to the provided score (from 1 to 100). The top recommendations are displayed at the bottom on the dataset page.
 
 ## Compatibility
 
@@ -30,7 +30,11 @@ RECOMMENDATIONS_SOURCES = {
     'source-name': 'https://path/to/recommendations.json',
     'other-source': 'https://path/to/other/recommendations.json',
 }
+RECOMMENDATIONS_NB_RECOMMENDATIONS = 4
 ```
+
+- `RECOMMENDATIONS_SOURCES`: A key-value dictionary of recommendation sources and URLs to fetch. _Default_: `{}`
+- `RECOMMENDATIONS_NB_RECOMMENDATIONS`: The maximum number of recommendations to display on the dataset page. _Default_: `4`
 
 ## Usage
 
@@ -39,13 +43,13 @@ RECOMMENDATIONS_SOURCES = {
 You can fetch and store recommendations from your configuration by running the following command.
 
 ```shell
-udata recommendations datasets
+udata recommendations add
 ```
 
 You can also specify a source and a URL to import one-off recommendations.
 
 ```shell
-udata recommendations datasets --url https://example.com/recommendations.json --source my-source
+udata recommendations add --url https://example.com/recommendations.json --source my-source
 ```
 
 ### Deleting recommendations
