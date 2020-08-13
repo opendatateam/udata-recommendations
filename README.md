@@ -61,6 +61,16 @@ udata recommendations add --clean
 udata recommendations add --url https://example.com/recommendations.json --source my-source --clean
 ```
 
+**As a job**
+
+You can fetch and store recommendations as a task, using your configuration in `RECOMMENDATIONS_SOURCES`. This lets fetch and store commands on a schedule. By default, previous recommendations are cleaned before the importing new ones, but you're in control.
+
+```shell
+udata job run add-recommendations
+# Don't clean each source before importing new recommendations
+udata job run add-recommendations should_clean=False
+```
+
 ### Deleting recommendations
 
 You can delete recommendations made by a specific source through a command.

@@ -1,8 +1,11 @@
 from flask import current_app
 
-from .commands import process_sources
-
 from udata.tasks import job
+
+from .commands import process_sources, log as commands_log
+
+
+log = commands_log
 
 
 @job("add-recommendations")
