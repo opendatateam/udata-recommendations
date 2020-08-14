@@ -10,6 +10,7 @@ from flask import current_app
 from udata.core.dataset.models import Dataset
 
 from udata.tasks import job
+from udata.commands import success, error
 
 log = logging.getLogger(__name__)
 
@@ -41,7 +42,7 @@ def clean_datasets_recommendations(source):
         dataset.extras['recommendations'] = new_recommendations
         dataset.save()
 
-    log.info(f"Cleaned up {len(datasets)} dataset(s)")
+    success(f"Cleaned up {len(datasets)} dataset(s)")
 
 
 def get_recommendations_data(url):
@@ -71,7 +72,7 @@ def process_dataset(source, dataset):
     try:
         target_dataset = get_dataset(dataset['id'])
     except (Dataset.DoesNotExist, mongoengine.errors.ValidationError):
-        log.error(f"Dataset {dataset['id']} not found")
+        error(f"Dataset {dataset['id']} not found")
         return
 
     log.info(f"Processing recommendations for dataset {dataset['id']}")
@@ -85,10 +86,10 @@ def process_dataset(source, dataset):
                 'source': source,
             })
         except (Dataset.DoesNotExist, mongoengine.errors.ValidationError):
-            log.error(f"Recommended dataset {reco['id']} not found")
+            error(f"Recommended dataset {reco['id']} not found")
             continue
     if len(valid_recos):
-        log.info(f"Found {len(valid_recos)} new recommendations for dataset {dataset['id']}")
+        success(f"Found {len(valid_recos)} new recommendations for dataset {dataset['id']}")
 
         new_sources = set(target_dataset.extras.get('recommendations:sources', []))
         new_sources.add(source)
@@ -101,7 +102,7 @@ def process_dataset(source, dataset):
         target_dataset.extras['recommendations'] = new_recommendations
         target_dataset.save()
     else:
-        log.error(f"No recommendation found for dataset {dataset['id']}")
+        error(f"No recommendations found for dataset {dataset['id']}")
 
 
 def process_sources(sources, should_clean):
