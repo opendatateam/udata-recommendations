@@ -68,9 +68,6 @@ setup(
         'udata.views': [
             'recommendations = udata_recommendations.views',
         ],
-        'udata.commands': [
-            'recommendations = udata_recommendations.commands:recommendations',
-        ],
         'udata.tasks': [
             'recommendations = udata_recommendations.tasks',
         ],

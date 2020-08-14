@@ -40,35 +40,12 @@ RECOMMENDATIONS_NB_RECOMMENDATIONS = 4
 
 ### Adding recommendations
 
-You can fetch and store recommendations from your configuration by running the following command.
+You can fetch and store recommendations as a task, using your configuration in `RECOMMENDATIONS_SOURCES`, on a schedule if needed. By default, previous recommendations are cleaned before the importing new ones, but you're in control.
 
 ```shell
-udata recommendations add
-```
-
-You can also specify a source and a URL to import one-off recommendations.
-
-```shell
-udata recommendations add --url https://example.com/recommendations.json --source my-source
-```
-
-**Cleaning recommendations before import**
-
-If you want to clean recommendations before importing new ones, you can add the `--clean` flag to your commands.
-
-```shell
-udata recommendations add --clean
-udata recommendations add --url https://example.com/recommendations.json --source my-source --clean
-```
-
-**As a job**
-
-You can fetch and store recommendations as a task, using your configuration in `RECOMMENDATIONS_SOURCES`. This lets fetch and store commands on a schedule. By default, previous recommendations are cleaned before the importing new ones, but you're in control.
-
-```shell
-udata job run add-recommendations
+udata job run recommendations-add
 # Don't clean each source before importing new recommendations
-udata job run add-recommendations should_clean=False
+udata job run recommendations-add should_clean=false
 ```
 
 ### Deleting recommendations
@@ -76,7 +53,7 @@ udata job run add-recommendations should_clean=False
 You can delete recommendations made by a specific source through a command.
 
 ```shell
-udata recommendations clean my-source
+udata job run recommendations-clean-source my-source
 ```
 
 This command will delete recommendations coming from the source `my-source`. If you want to clean multiple sources, you can run multiple times this command.
