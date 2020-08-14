@@ -15,7 +15,15 @@ from udata.commands import success, error
 log = logging.getLogger(__name__)
 
 
-def clean_datasets_recommendations(source):
+def recommendations_clean():
+    nb_datasets = Dataset.objects.update(**{
+        'unset__extras__recommendations': True,
+        'unset__extras__recommendations:sources': True,
+    })
+    success(f"Removed recommendations from {nb_datasets} dataset(s)")
+
+
+def recommendations_clean_source(source):
     datasets = Dataset.objects.filter(**{
         'extras__recommendations:sources__contains': source,
     })
@@ -105,24 +113,29 @@ def process_dataset(source, dataset):
         error(f"No recommendations found for dataset {dataset['id']}")
 
 
-def process_sources(sources, should_clean):
+def recommendations_add(sources, should_clean):
     for source, url in sources.items():
         if should_clean:
             log.info(f'Cleaning up dataset recommendations from source {source}')
-            clean_datasets_recommendations(source)
+            recommendations_clean_source(source)
 
         log.info(f'Fetching dataset recommendations from {url}, source {source}')
         process_source(source, get_recommendations_data(url))
 
 
 @job("recommendations-clean-source")
+def run_recommendations_clean(self):
+    recommendations_clean()
+
+
+@job("recommendations-clean-source")
 def run_recommendations_clean_source(self, source):
-    clean_datasets_recommendations(source)
+    recommendations_clean_source(source)
 
 
 @job("recommendations-add")
-def run_add_recommendations(self, should_clean=True):
+def run_recommendations_add(self, should_clean=True):
     should_clean = should_clean in [True, 'true', 'True']
     sources = current_app.config.get('RECOMMENDATIONS_SOURCES', {})
 
-    process_sources(sources, should_clean)
+    recommendations_add(sources, should_clean)

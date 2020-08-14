@@ -3,7 +3,9 @@ import jsonschema
 
 from udata.core.dataset.factories import DatasetFactory
 
-from udata_recommendations.tasks import clean_datasets_recommendations, process_sources
+from udata_recommendations.tasks import (
+    recommendations_clean, recommendations_clean_source, recommendations_add
+)
 
 MOCK_URL = 'http://reco.net'
 
@@ -69,6 +71,43 @@ def mock_response(datasets):
 
 @pytest.mark.usefixtures('clean_db')
 class Tests:
+    def test_clean(self):
+        ds1 = DatasetFactory(extras={
+            'untouched': 'yep',
+            'recommendations:sources': ['foo', 'bar'],
+            'recommendations': [
+                {
+                    'id': 'id1',
+                    'source': 'bar',
+                    'score': 50
+                },
+                {
+                    'id': 'id2',
+                    'source': 'foo',
+                    'score': 50
+                },
+            ]
+        })
+        ds2 = DatasetFactory(extras={
+            'wait': 'for it',
+            'recommendations:sources': ['baz'],
+            'recommendations': [
+                {
+                    'id': 'id2',
+                    'source': 'baz',
+                    'score': 50
+                },
+            ]
+        })
+
+        recommendations_clean()
+
+        ds1.reload()
+        ds2.reload()
+
+        assert ds1.extras == {'untouched': 'yep'}
+        assert ds2.extras == {'wait': 'for it'}
+
     def test_clean_source(self):
         ds = DatasetFactory(extras={
             'recommendations:sources': ['foo', 'bar'],
@@ -96,7 +135,7 @@ class Tests:
             ]
         })
 
-        clean_datasets_recommendations("foo")
+        recommendations_clean_source("foo")
 
         ds.reload()
         assert ds.extras == {
@@ -116,13 +155,13 @@ class Tests:
         rmock.get(MOCK_URL, json=mock_invalid_response)
 
         with pytest.raises(jsonschema.exceptions.ValidationError):
-            process_sources({'fake_source': MOCK_URL}, should_clean=False)
+            recommendations_add({'fake_source': MOCK_URL}, should_clean=False)
 
     def test_datasets_recommendations_from_config_empty_db(self, rmock, mock_response, datasets):
         ds1, ds2, ds3 = datasets
         rmock.get(MOCK_URL, json=mock_response)
 
-        process_sources({'fake_source': MOCK_URL}, should_clean=False)
+        recommendations_add({'fake_source': MOCK_URL}, should_clean=False)
 
         # Correct recommendations have been filled
         ds2.reload()
@@ -148,7 +187,7 @@ class Tests:
         ]
         ds2.save()
 
-        process_sources({'fake_source': MOCK_URL}, should_clean=False)
+        recommendations_add({'fake_source': MOCK_URL}, should_clean=False)
 
         # Recommendations have been merged, new source has been added
         ds2.reload()
@@ -160,7 +199,7 @@ class Tests:
         ]
 
         # Clean recommendations from the `existing` source
-        clean_datasets_recommendations("existing")
+        recommendations_clean_source("existing")
         ds2.reload()
         assert ds2.extras['recommendations:sources'] == ['fake_source']
         assert ds2.extras['recommendations'] == [
@@ -178,7 +217,7 @@ class Tests:
         ]
         ds1.save()
 
-        process_sources({'fake_source': MOCK_URL}, should_clean=True)
+        recommendations_add({'fake_source': MOCK_URL}, should_clean=True)
 
         # Correct recommendations have been filled
         ds2.reload()
