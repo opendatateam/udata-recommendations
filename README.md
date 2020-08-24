@@ -50,13 +50,7 @@ udata job run recommendations-add should_clean=false
 
 ### Deleting recommendations
 
-You can delete recommendations made by a specific source.
-
-```shell
-udata job run recommendations-clean-source my-source
-```
-
-If you want to clean multiple sources, you can run the following task.
+To clean all recommendations, you can run the following task.
 
 ```shell
 udata job run recommendations-clean

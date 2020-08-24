@@ -3,9 +3,7 @@ import jsonschema
 
 from udata.core.dataset.factories import DatasetFactory
 
-from udata_recommendations.tasks import (
-    recommendations_clean, recommendations_clean_source, recommendations_add
-)
+from udata_recommendations.tasks import recommendations_clean, recommendations_add
 
 MOCK_URL = 'http://reco.net'
 
@@ -108,49 +106,6 @@ class Tests:
         assert ds1.extras == {'untouched': 'yep'}
         assert ds2.extras == {'wait': 'for it'}
 
-    def test_clean_source(self):
-        ds = DatasetFactory(extras={
-            'recommendations:sources': ['foo', 'bar'],
-            'recommendations': [
-                {
-                    'id': 'id1',
-                    'source': 'bar',
-                    'score': 50
-                },
-                {
-                    'id': 'id2',
-                    'source': 'foo',
-                    'score': 50
-                },
-            ]
-        })
-        ds2 = DatasetFactory(extras={
-            'recommendations:sources': ['foo'],
-            'recommendations': [
-                {
-                    'id': 'id2',
-                    'source': 'foo',
-                    'score': 50
-                },
-            ]
-        })
-
-        recommendations_clean_source("foo")
-
-        ds.reload()
-        assert ds.extras == {
-            'recommendations:sources': ['bar'],
-            'recommendations': [
-                {
-                    'id': 'id1',
-                    'source': 'bar',
-                    'score': 50
-                }
-            ]
-        }
-        ds2.reload()
-        assert ds2.extras == {}
-
     def test_datasets_recommendations_invalid_data_in_config(self, mock_invalid_response, rmock):
         rmock.get(MOCK_URL, json=mock_invalid_response)
 
@@ -194,15 +149,6 @@ class Tests:
         assert set(ds2.extras['recommendations:sources']) == set(['existing', 'fake_source'])
         assert ds2.extras['recommendations'] == [
             {'id': str(ds4.id), 'source': 'existing', 'score': 50},
-            {'id': str(ds1.id), 'source': 'fake_source', 'score': 2},
-            {'id': str(ds3.id), 'source': 'fake_source', 'score': 1},
-        ]
-
-        # Clean recommendations from the `existing` source
-        recommendations_clean_source("existing")
-        ds2.reload()
-        assert ds2.extras['recommendations:sources'] == ['fake_source']
-        assert ds2.extras['recommendations'] == [
             {'id': str(ds1.id), 'source': 'fake_source', 'score': 2},
             {'id': str(ds3.id), 'source': 'fake_source', 'score': 1},
         ]

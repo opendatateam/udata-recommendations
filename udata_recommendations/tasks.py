@@ -25,36 +25,6 @@ def recommendations_clean():
     success(f"Removed recommendations from {nb_datasets} dataset(s)")
 
 
-def recommendations_clean_source(source):
-    datasets = Dataset.objects.filter(**{
-        'extras__recommendations:sources__contains': source,
-    })
-
-    for dataset in datasets:
-        new_sources = set(
-            [s for s in dataset.extras['recommendations:sources'] if s != source]
-        )
-
-        # Dataset had only this source: delete all recommendations
-        if len(new_sources) == 0:
-            dataset.update(**{
-                'unset__extras__recommendations': True,
-                'unset__extras__recommendations:sources': True,
-            })
-            continue
-
-        # Dataset had at least one other source, keep only other sources
-        new_recommendations = [
-            r for r in dataset.extras['recommendations']
-            if r['source'] != source
-        ]
-        dataset.extras['recommendations:sources'] = list(new_sources)
-        dataset.extras['recommendations'] = new_recommendations
-        dataset.save()
-
-    success(f"Cleaned up {len(datasets)} dataset(s)")
-
-
 def get_recommendations_data(url):
     response = requests.get(url, timeout=10)
     response.raise_for_status()
@@ -116,23 +86,18 @@ def process_dataset(source, dataset):
 
 
 def recommendations_add(sources, should_clean):
-    for source, url in sources.items():
-        if should_clean:
-            log.info(f'Cleaning up dataset recommendations from source {source}')
-            recommendations_clean_source(source)
+    if should_clean:
+        log.info('Cleaning up dataset recommendations')
+        recommendations_clean()
 
+    for source, url in sources.items():
         log.info(f'Fetching dataset recommendations from {url}, source {source}')
         process_source(source, get_recommendations_data(url))
 
 
-@job("recommendations-clean-source")
+@job("recommendations-clean")
 def run_recommendations_clean(self):
     recommendations_clean()
-
-
-@job("recommendations-clean-source")
-def run_recommendations_clean_source(self, source):
-    recommendations_clean_source(source)
 
 
 @job("recommendations-add")
