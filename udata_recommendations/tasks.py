@@ -1,6 +1,6 @@
 import logging
 import json
-import importlib
+import importlib.resources as pkg_resources
 
 import mongoengine
 import requests
@@ -30,7 +30,7 @@ def get_recommendations_data(url):
     response.raise_for_status()
     data = response.json()
 
-    with importlib.resources.path('udata_recommendations', 'schema.json') as schema_path:
+    with pkg_resources.path('udata_recommendations', 'schema.json') as schema_path:
         with open(schema_path) as f:
             schema = json.load(f)
         jsonschema.validate(instance=data, schema=schema)
