@@ -60,6 +60,8 @@ def process_dataset(source, dataset):
     for reco in dataset['recommendations']:
         try:
             reco_dataset_obj = get_dataset(reco['id'])
+            if reco_dataset_obj.id == target_dataset.id:
+                continue
             valid_recos.append({
                 'id': str(reco_dataset_obj.id),
                 'score': reco['score'],
