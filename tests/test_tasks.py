@@ -176,3 +176,18 @@ class Tests:
         # Previous recommendations have been cleaned
         ds1.reload()
         assert ds1.extras == {}
+
+    def test_datasets_recommendations_ignore_self_recommendation(self, rmock, datasets):
+        ds1, _, _ = datasets
+        rmock.get(MOCK_URL, json=[{
+            "id": str(ds1.id),
+            "recommendations": [{
+                "id": str(ds1.id),
+                "score": 50
+            }]
+        }])
+
+        recommendations_add({'fake_source': MOCK_URL}, should_clean=True)
+
+        ds1.reload()
+        assert ds1.extras == {}

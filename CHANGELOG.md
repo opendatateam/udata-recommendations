@@ -2,7 +2,7 @@
 
 ## Current (in progress)
 
-- Nothing yet
+- Ignore recommendation of dataset itself [#147](https://github.com/opendatateam/udata-recommendations/pull/147)
 
 ## 2.1.0 (2020-08-25)
 
