@@ -1,5 +1,9 @@
 # Changelog
 
+## Current (in progress)
+
+- Nothing yet
+
 ## 2.1.1 (2020-10-16)
 
 - Ignore recommendation of dataset itself [#147](https://github.com/opendatateam/udata-recommendations/pull/147)
