@@ -1,8 +1,24 @@
-{% if recommendations %}
+{%- if reco_reuses %}
 <div id="dataset-recommendations" class="hidden-xs">
-    <h3>{{ _('See also') }}</h3>
+    <h3>Réutilisations recommandées</h3>
     <div id="dataset-recommendations-container" class="card-list card-list--columned">
-        {% for dataset in recommendations %}
+        {% for reuse in reco_reuses %}
+            <div class="col-xs-12 col-md-6"
+                 data-track-content
+                 data-content-name="reuse recommendations"
+                 data-content-piece="reco {{ loop.idx }}"
+                 data-content-target="reuses/{{ reuse.id }}">
+                {% include theme('reuse/card.html') with context %}
+            </div>
+        {% endfor %}
+    </div>
+</div>
+{% endif -%}
+{%- if reco_datasets %}
+<div id="dataset-recommendations" class="hidden-xs">
+    <h3>Jeux de données recommandés</h3>
+    <div id="dataset-recommendations-container" class="card-list card-list--columned">
+        {% for dataset in reco_datasets %}
             <div class="col-xs-12 col-md-6"
                  data-track-content
                  data-content-name="dataset recommendations"
@@ -13,4 +29,4 @@
         {% endfor %}
     </div>
 </div>
-{% endif %}
+{% endif -%}

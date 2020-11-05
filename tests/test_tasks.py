@@ -2,6 +2,7 @@ import pytest
 import jsonschema
 
 from udata.core.dataset.factories import DatasetFactory
+from udata.core.reuse.factories import ReuseFactory
 
 from udata_recommendations.tasks import recommendations_clean, recommendations_add
 
@@ -14,6 +15,11 @@ def datasets():
 
 
 @pytest.fixture
+def reuses():
+    return ReuseFactory.create_batch(2)
+
+
+@pytest.fixture
 def mock_invalid_response():
     return [
         {"foo": "bar"}
@@ -21,8 +27,9 @@ def mock_invalid_response():
 
 
 @pytest.fixture
-def mock_response(datasets):
+def mock_response(datasets, reuses):
     ds1, ds2, ds3 = datasets
+    r1, r2 = reuses
     return [
         {
             # Invalid ID, but valid reco: should not crash the command
@@ -51,7 +58,17 @@ def mock_response(datasets):
                 {
                     "id": "nope",
                     "score": 50
-                }
+                },
+                {
+                    "id": str(r1.slug),
+                    "score": 50,
+                    "type": "reuse",
+                },
+                {
+                    "id": str(r2.id),
+                    "score": 100,
+                    "type": "reuse",
+                },
             ]
         },
         {
@@ -132,8 +149,9 @@ class Tests:
         assert ds1.extras == {}
         assert ds3.extras == {}
 
-    def test_datasets_recommendations_from_config(self, rmock, mock_response, datasets):
+    def test_datasets_recommendations_from_config(self, rmock, mock_response, datasets, reuses):
         ds1, ds2, ds3 = datasets
+        r1, r2 = reuses
         ds4 = DatasetFactory()
         rmock.get(MOCK_URL, json=mock_response)
         ds2.extras['recommendations:sources'] = ['existing']
@@ -151,6 +169,10 @@ class Tests:
             {'id': str(ds4.id), 'source': 'existing', 'score': 50},
             {'id': str(ds1.id), 'source': 'fake_source', 'score': 2},
             {'id': str(ds3.id), 'source': 'fake_source', 'score': 1},
+        ]
+        assert ds2.extras['recommendations-reuses'] == [
+            {'id': str(r2.id), 'source': 'fake_source', 'score': 100},
+            {'id': str(r1.id), 'source': 'fake_source', 'score': 50},
         ]
 
     def test_datasets_recommendations_from_config_clean(self, mock_response, rmock, datasets):

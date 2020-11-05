@@ -7,7 +7,7 @@ import requests
 import jsonschema
 from flask import current_app
 
-from udata.core.dataset.models import Dataset
+from udata.models import Dataset, Reuse
 
 from udata.tasks import job
 from udata.commands import success, error
@@ -20,6 +20,7 @@ def recommendations_clean():
         f'extras__recommendations:sources__exists': True,
     }).update(**{
         'unset__extras__recommendations': True,
+        'unset__extras__recommendations-reuses': True,
         'unset__extras__recommendations:sources': True,
     })
     success(f"Removed recommendations from {nb_datasets} dataset(s)")
@@ -43,6 +44,11 @@ def get_dataset(id_or_slug):
     return obj or Dataset.objects.get(id=id_or_slug)
 
 
+def get_reuse(id_or_slug):
+    obj = Reuse.objects(slug=id_or_slug).first()
+    return obj or Reuse.objects.get(id=id_or_slug)
+
+
 def process_source(source, recommendations_data):
     for dataset in recommendations_data:
         process_dataset(source, dataset)
@@ -56,32 +62,63 @@ def process_dataset(source, dataset):
         return
 
     log.info(f"Processing recommendations for dataset {dataset['id']}")
-    valid_recos = []
+    valid_recos_datasets = []
+    valid_recos_reuses = []
     for reco in dataset['recommendations']:
-        try:
-            reco_dataset_obj = get_dataset(reco['id'])
-            if reco_dataset_obj.id == target_dataset.id:
+        # default type is `dataset` for retrocompat
+        reco_type = reco.get('type', 'dataset')
+        if reco_type == 'dataset':
+            try:
+                reco_dataset_obj = get_dataset(reco['id'])
+                if reco_dataset_obj.id == target_dataset.id:
+                    continue
+                valid_recos_datasets.append({
+                    'id': str(reco_dataset_obj.id),
+                    'score': reco['score'],
+                    'source': source,
+                })
+            except (Dataset.DoesNotExist, mongoengine.errors.ValidationError):
+                error(f"Recommended dataset {reco['id']} not found")
                 continue
-            valid_recos.append({
-                'id': str(reco_dataset_obj.id),
-                'score': reco['score'],
-                'source': source,
-            })
-        except (Dataset.DoesNotExist, mongoengine.errors.ValidationError):
-            error(f"Recommended dataset {reco['id']} not found")
+        elif reco_type == 'reuse':
+            try:
+                reuse = get_reuse(reco['id'])
+                valid_recos_reuses.append({
+                    'id': str(reuse.id),
+                    'score': reco['score'],
+                    'source': source,
+                })
+            except (Reuse.DoesNotExist, mongoengine.errors.ValidationError):
+                error(f"Recommended reuse {reco['id']} not found")
+                continue
+        else:
+            error(f'Unknown recommendation type {reco_type}')
             continue
-    if len(valid_recos):
-        success(f"Found {len(valid_recos)} new recommendations for dataset {dataset['id']}")
 
+    if len(valid_recos_datasets) or len(valid_recos_reuses):
         new_sources = set(target_dataset.extras.get('recommendations:sources', []))
         new_sources.add(source)
+        target_dataset.extras['recommendations:sources'] = list(new_sources)
+
+    if len(valid_recos_datasets):
+        success(f"Found {len(valid_recos_datasets)} new dataset recommendations for dataset {dataset['id']}")
 
         merged_recommendations = target_dataset.extras.get('recommendations', [])
-        merged_recommendations.extend(valid_recos)
+        merged_recommendations.extend(valid_recos_datasets)
         new_recommendations = sorted(merged_recommendations, key=lambda k: k['score'], reverse=True)
 
-        target_dataset.extras['recommendations:sources'] = list(new_sources)
         target_dataset.extras['recommendations'] = new_recommendations
+
+    if len(valid_recos_reuses):
+        success(f"Found {len(valid_recos_reuses)} new reuse recommendations for dataset {dataset['id']}")
+
+        merged_recommendations = target_dataset.extras.get('recommendations-reuses', [])
+        merged_recommendations.extend(valid_recos_reuses)
+        new_recommendations = sorted(merged_recommendations, key=lambda k: k['score'], reverse=True)
+
+        target_dataset.extras['recommendations-reuses'] = new_recommendations
+
+    if len(valid_recos_datasets) or len(valid_recos_reuses):
         target_dataset.save()
     else:
         error(f"No recommendations found for dataset {dataset['id']}")
