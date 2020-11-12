@@ -1,6 +1,14 @@
 {%- if reco_reuses %}
 <div id="dataset-recommendations" class="hidden-xs">
-    <h3>Réutilisations recommandées</h3>
+    <!-- hugly DOM hack to reuse resources-list style -->
+    <div class="resources-list" style="margin: 0;">
+        <div class="resources-list-header">
+            <h3>Réutilisations recommandées</h3>
+            <span class="community-resources-anchor">
+                <small><a href="#community-reuses">Toutes les réutilisations</a></small>
+            </span>
+        </div>
+    </div>
     <div id="dataset-recommendations-container" class="card-list card-list--columned">
         {% for reuse in reco_reuses %}
             <div class="col-xs-12 col-md-6"
