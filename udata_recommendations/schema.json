@@ -8,6 +8,9 @@
       "id": {
         "type": "string"
       },
+      "type": {
+        "type": "string"
+      },
       "recommendations": {
         "type": "array",
         "uniqueItems": true,
