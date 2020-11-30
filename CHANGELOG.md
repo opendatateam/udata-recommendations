@@ -1,5 +1,9 @@
 # Changelog
 
+## Current (in progress)
+
+- Nothing yet
+
 ## 2.2.0 (2020-11-30)
 
 - Add reuses support [#153](https://github.com/opendatateam/udata-recommendations/pull/153)
