@@ -2,7 +2,7 @@
 
 ## Current (in progress)
 
-- Nothing yet
+- Add reuses support [#153](https://github.com/opendatateam/udata-recommendations/pull/153)
 
 ## 2.1.1 (2020-10-16)
 
