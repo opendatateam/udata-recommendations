@@ -2,7 +2,7 @@
 
 ## Current (in progress)
 
-- Nothing yet
+- Ensure compatibility with udata-front by changing imports [#183](https://github.com/opendatateam/udata-recommendations/pull/183)
 
 ## 2.2.0 (2020-11-30)
 
