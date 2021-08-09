@@ -9,9 +9,9 @@
             </span>
         </div>
     </div>
-    <div id="dataset-recommendations-container" class="py-md">
+    <div id="dataset-recommendations-container" class="row py-md reuse-cards">
         {% for reuse in reco_reuses %}
-            <div class="card reuse-card border p-sm unstyled w-100 mb-md"
+            <div class="col-6"
                  data-track-content
                  data-content-name="reuse recommendations"
                  data-content-piece="reco {{ loop.idx }}"
