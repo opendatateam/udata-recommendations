@@ -9,9 +9,9 @@
             </span>
         </div>
     </div>
-    <div id="dataset-recommendations-container" class="card-list card-list--columned">
+    <div id="dataset-recommendations-container" class="py-md">
         {% for reuse in reco_reuses %}
-            <div class="col-xs-12 col-md-6"
+            <div class="card dataset-card border p-sm unstyled w-100 mb-md"
                  data-track-content
                  data-content-name="reuse recommendations"
                  data-content-piece="reco {{ loop.idx }}"
@@ -25,9 +25,9 @@
 {%- if reco_datasets %}
 <div id="dataset-recommendations" class="hidden-xs">
     <h3>Jeux de données recommandés</h3>
-    <div id="dataset-recommendations-container" class="card-list card-list--columned">
+    <div id="dataset-recommendations-container" class="py-md">
         {% for dataset in reco_datasets %}
-            <div class="col-xs-12 col-md-6"
+            <div class="card dataset-card border p-sm unstyled w-100 mb-md"
                  data-track-content
                  data-content-name="dataset recommendations"
                  data-content-piece="reco {{ loop.idx }}"
