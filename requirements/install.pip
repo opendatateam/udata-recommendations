@@ -1,3 +1,4 @@
-udata>=3.0.0
+# FIXME:
+udata>=3.0.4.dev21033
 udata-gouvfr>=3.0.0
 jsonschema==3.2.0
