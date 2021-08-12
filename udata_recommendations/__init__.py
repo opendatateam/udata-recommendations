@@ -2,5 +2,5 @@
 uData recommendations
 '''
 
-__version__ = '2.2.1.dev'
+__version__ = '3.0.0'
 __description__ = 'uData content recommendations bridge'

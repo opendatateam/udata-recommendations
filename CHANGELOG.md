@@ -1,6 +1,6 @@
 # Changelog
 
-## Current (in progress)
+## 3.0.0 (2021-08-12)
 
 - Ensure compatibility with udata3 by changing imports and style [#183](https://github.com/opendatateam/udata-recommendations/pull/183)
 
