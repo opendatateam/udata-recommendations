@@ -68,9 +68,6 @@ jobs:
     steps:
       - attach_workspace:
           at: .
-      - run:
-          name: Install Twine
-          command: pip install twine
       - deploy:
           name: Publish on PyPI
           command: |
