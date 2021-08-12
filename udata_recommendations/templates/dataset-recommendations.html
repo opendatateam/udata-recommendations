@@ -1,17 +1,12 @@
 {%- if reco_reuses %}
 <div id="dataset-recommendations" class="hidden-xs">
-    <!-- hugly DOM hack to reuse resources-list style -->
-    <div class="resources-list" style="margin: 0;">
-        <div class="resources-list-header">
-            <h3>Réutilisations recommandées</h3>
-            <span class="community-resources-anchor">
-                <small><a href="#community-reuses">Toutes les réutilisations</a></small>
-            </span>
-        </div>
-    </div>
-    <div id="dataset-recommendations-container" class="card-list card-list--columned">
+    <h3>Réutilisations recommandées</h3>
+    <span class="community-resources-anchor">
+        <small><a href="#community-reuses">Toutes les réutilisations</a></small>
+    </span>
+    <div id="dataset-recommendations-container" class="row py-md reuse-cards">
         {% for reuse in reco_reuses %}
-            <div class="col-xs-12 col-md-6"
+            <div class="col-6"
                  data-track-content
                  data-content-name="reuse recommendations"
                  data-content-piece="reco {{ loop.idx }}"
@@ -25,9 +20,9 @@
 {%- if reco_datasets %}
 <div id="dataset-recommendations" class="hidden-xs">
     <h3>Jeux de données recommandés</h3>
-    <div id="dataset-recommendations-container" class="card-list card-list--columned">
+    <div id="dataset-recommendations-container" class="py-md">
         {% for dataset in reco_datasets %}
-            <div class="col-xs-12 col-md-6"
+            <div class="card dataset-card border p-sm unstyled w-100 mb-md"
                  data-track-content
                  data-content-name="dataset recommendations"
                  data-content-piece="reco {{ loop.idx }}"

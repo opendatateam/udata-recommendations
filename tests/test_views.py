@@ -26,10 +26,8 @@ def reuses():
 @pytest.mark.frontend
 @pytest.mark.usefixtures('clean_db')
 @pytest.mark.usefixtures('app')
+@pytest.mark.options(THEME='gouvfr')
 class TestViews:
-    def test_view_no_dataset(self):
-        assert '' == render_hook(dataset=None)
-
     def test_view_dataset_no_extras(self):
         assert '' == render_hook(dataset=DatasetFactory(extras={}))
 
@@ -75,8 +73,8 @@ class TestViews:
 
         content = render_hook(dataset=dataset)
 
-        assert content.count(ds1.full_title) == 1
-        assert content.count(f'<h4>{r1.title}</h4>') == 1
+        assert content.count(f'href="{ds1.external_url}"') == 1
+        assert content.count(f'href="{r1.external_url}"') == 1
         assert ds1.full_title in content
         assert ds2.full_title not in content
         assert ds3.full_title in content
