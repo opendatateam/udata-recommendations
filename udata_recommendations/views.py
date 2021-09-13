@@ -2,8 +2,8 @@ from flask import Blueprint, current_app
 
 from udata.core.dataset.models import Dataset
 from udata.core.reuse.models import Reuse
-from udata_gouvfr import theme
-from udata_gouvfr.frontend import template_hook
+from udata_front import theme
+from udata_front.frontend import template_hook
 
 
 blueprint = Blueprint('recommendations', __name__, template_folder='templates')
