@@ -1,3 +1,3 @@
 import pytest
 
-pytestmark = pytest.mark.options(plugins=['gouvfr', 'recommendations'])
+pytestmark = pytest.mark.options(plugins=['front', 'recommendations'])

@@ -2,7 +2,7 @@
 
 ## Current (in progress)
 
-- Nothing yet
+- Change udata-gouvfr dependency to udata-front following renaming [#188](https://github.com/opendatateam/udata-recommendations/pull/188)
 
 ## 3.0.0 (2021-08-12)
 
