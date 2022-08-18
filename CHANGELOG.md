@@ -3,6 +3,7 @@
 ## Current (in progress)
 
 - Replace mongo legacy image in CI [#226](https://github.com/opendatateam/udata-recommendations/pull/226)
+- Store unique recommendations in extras [#239](https://github.com/opendatateam/udata-recommendations/pull/239)
 
 ## 3.1.0 (2021-09-16)
 
