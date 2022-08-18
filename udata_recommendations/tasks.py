@@ -38,6 +38,7 @@ def get_recommendations_data(url):
 
     return data
 
+
 def get_unique_recommendations(recos):
     '''
     This function returns a list of unique recos, based on the `id` key.
