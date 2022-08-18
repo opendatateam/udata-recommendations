@@ -38,6 +38,20 @@ def get_recommendations_data(url):
 
     return data
 
+def get_unique_recommendations(recos):
+    '''
+    This function returns a list of unique recos, based on the `id` key.
+    The first unique element found is kept, following ones are ignored.
+    Thus you should order the list accordingly before applying this function.
+    '''
+    ids_seen = set()
+    unique_recos = []
+    for reco in recos:
+        if reco['id'] not in ids_seen:
+            ids_seen.add(reco['id'])
+            unique_recos.append(reco)
+    return unique_recos
+
 
 def get_dataset(id_or_slug):
     obj = Dataset.objects(slug=id_or_slug).first()
@@ -103,18 +117,18 @@ def process_dataset(source, dataset):
     if len(valid_recos_datasets):
         success(f"Found {len(valid_recos_datasets)} new dataset recommendations for dataset {dataset['id']}")
 
-        merged_recommendations = target_dataset.extras.get('recommendations', [])
-        merged_recommendations.extend(valid_recos_datasets)
-        new_recommendations = sorted(merged_recommendations, key=lambda k: k['score'], reverse=True)
+        merged_recommendations = valid_recos_datasets + target_dataset.extras.get('recommendations', [])
+        unique_recommendations = get_unique_recommendations(merged_recommendations)
+        new_recommendations = sorted(unique_recommendations, key=lambda k: k['score'], reverse=True)
 
         target_dataset.extras['recommendations'] = new_recommendations
 
     if len(valid_recos_reuses):
         success(f"Found {len(valid_recos_reuses)} new reuse recommendations for dataset {dataset['id']}")
 
-        merged_recommendations = target_dataset.extras.get('recommendations-reuses', [])
-        merged_recommendations.extend(valid_recos_reuses)
-        new_recommendations = sorted(merged_recommendations, key=lambda k: k['score'], reverse=True)
+        merged_recommendations = valid_recos_reuses + target_dataset.extras.get('recommendations-reuses', [])
+        unique_recommendations = get_unique_recommendations(merged_recommendations)
+        new_recommendations = sorted(unique_recommendations, key=lambda k: k['score'], reverse=True)
 
         target_dataset.extras['recommendations-reuses'] = new_recommendations
 
