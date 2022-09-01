@@ -1,5 +1,9 @@
 # Changelog
 
+## Current (in progress)
+
+- Nothing yet
+
 ## 3.1.1 (2022-09-01)
 
 - Replace mongo legacy image in CI [#226](https://github.com/opendatateam/udata-recommendations/pull/226)
