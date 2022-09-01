@@ -1,6 +1,6 @@
 # Changelog
 
-## Current (in progress)
+## 3.1.1 (2022-09-01)
 
 - Replace mongo legacy image in CI [#226](https://github.com/opendatateam/udata-recommendations/pull/226)
 - Store unique recommendations in extras [#239](https://github.com/opendatateam/udata-recommendations/pull/239)
