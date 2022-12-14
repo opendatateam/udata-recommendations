@@ -213,3 +213,33 @@ class Tests:
 
         ds1.reload()
         assert ds1.extras == {}
+
+    def test_datasets_recommendations_ignore_duplicate_recommendation(self, rmock, datasets):
+        ds1, ds2, ds3 = datasets
+        ds1.extras = {
+            'recommendations': [{
+                'id': str(ds2),
+                'source': 'fake_source',
+                'score': 1
+            }]
+        }
+        rmock.get(MOCK_URL, json=[{
+            "id": str(ds1.id),
+            "recommendations": [{
+                "id": str(ds2.id),
+                "score": 4
+            },
+            {
+                "id": str(ds3.id),
+                "score": 5
+            }]
+        }])
+
+        recommendations_add({'fake_source': MOCK_URL}, should_clean=True)
+
+        # The new recommendation score for ds2 will be kept instead of the old one
+        ds1.reload()
+        assert ds1.extras['recommendations'] == [
+            {'id': str(ds3.id), 'source': 'fake_source', 'score': 5},
+            {'id': str(ds2.id), 'source': 'fake_source', 'score': 4}
+        ]

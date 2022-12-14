@@ -4,6 +4,11 @@
 
 - Nothing yet
 
+## 3.1.1 (2022-09-01)
+
+- Replace mongo legacy image in CI [#226](https://github.com/opendatateam/udata-recommendations/pull/226)
+- Store unique recommendations in extras [#239](https://github.com/opendatateam/udata-recommendations/pull/239)
+
 ## 3.1.0 (2021-09-16)
 
 - Change udata-gouvfr dependency to udata-front following renaming [#188](https://github.com/opendatateam/udata-recommendations/pull/188)
