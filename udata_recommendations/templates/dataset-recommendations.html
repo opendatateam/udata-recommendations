@@ -1,16 +1,16 @@
 {%- if reco_reuses %}
-<div id="dataset-recommendations" class="hidden-xs">
+<div id="dataset-recommendations" class="fr-hidden fr-unhidden-sm">
     <h3>Réutilisations recommandées</h3>
     <span class="community-resources-anchor">
         <small><a href="#community-reuses">Toutes les réutilisations</a></small>
     </span>
-    <div id="dataset-recommendations-container" class="row py-md reuse-cards">
+    <div id="dataset-recommendations-container" class="fr-grid-row fr-grid-row--gutters fr-py-2w">
         {% for reuse in reco_reuses %}
-            <div class="col-6"
-                 data-track-content
-                 data-content-name="reuse recommendations"
-                 data-content-piece="reco {{ loop.idx }}"
-                 data-content-target="reuses/{{ reuse.id }}">
+            <div class="fr-col-lg-3 fr-col-sm-6 fr-col-12"
+                data-track-content
+                data-content-name="reuse recommendations"
+                data-content-piece="reco {{ loop.idx }}"
+                data-content-target="reuses/{{ reuse.id }}">
                 {% include theme('reuse/card.html') with context %}
             </div>
         {% endfor %}
@@ -18,15 +18,15 @@
 </div>
 {% endif -%}
 {%- if reco_datasets %}
-<div id="dataset-recommendations" class="hidden-xs">
+<div id="dataset-recommendations" class="fr-hidden fr-unhidden-sm">
     <h3>Jeux de données recommandés</h3>
-    <div id="dataset-recommendations-container" class="py-md">
+    <div id="dataset-recommendations-container">
         {% for dataset in reco_datasets %}
-            <div class="card dataset-card border p-sm unstyled w-100 mb-md"
-                 data-track-content
-                 data-content-name="dataset recommendations"
-                 data-content-piece="reco {{ loop.idx }}"
-                 data-content-target="datasets/{{ dataset.id }}">
+            <div class="fr-mb-2w"
+                data-track-content
+                data-content-name="dataset recommendations"
+                data-content-piece="reco {{ loop.idx }}"
+                data-content-target="datasets/{{ dataset.id }}">
                 {% include theme('dataset/card.html') with context %}
             </div>
         {% endfor %}

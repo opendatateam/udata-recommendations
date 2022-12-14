@@ -2,7 +2,7 @@
 
 ## Current (in progress)
 
-- Nothing yet
+- Update dataset and reuse recommendations to match new udata-front layout [207](https://github.com/opendatateam/udata-recommendations/pull/207)
 
 ## 3.1.1 (2022-09-01)
 

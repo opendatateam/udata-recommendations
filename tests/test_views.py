@@ -4,6 +4,7 @@ from flask import render_template_string, g
 
 from udata.core.dataset.factories import DatasetFactory
 from udata.core.reuse.factories import ReuseFactory
+from udata.frontend.markdown import mdstrip
 
 
 def render_hook(dataset):
@@ -52,7 +53,7 @@ class TestViews:
         assert ds1.full_title in content
         assert ds2.full_title in content
         assert ds3.full_title not in content
-        assert r1.title in content
+        assert mdstrip(r1.title, 55) in content
 
     @pytest.mark.options(RECOMMENDATIONS_NB_RECOMMENDATIONS=2)
     def test_view_dataset_with_recommendations_dedupe(self, datasets, reuses):
