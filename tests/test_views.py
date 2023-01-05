@@ -74,7 +74,7 @@ class TestViews:
 
         content = render_hook(dataset=dataset)
 
-        assert content.count(f'href="{ds1.external_url}"') == 1
+        assert content.count(f'href="{ds1.display_url}"') == 1
         assert content.count(f'href="{r1.external_url}"') == 1
         assert ds1.full_title in content
         assert ds2.full_title not in content
