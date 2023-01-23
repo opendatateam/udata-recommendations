@@ -1,8 +1,16 @@
 import os
 
+from datetime import datetime
+
+from babel.messages.pofile import read_po, write_po
+from babel.util import LOCALTZ
 from invoke import task, call
 
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__)))
+
+I18N_ROOT = 'udata_recommendations/translations'
+
+LANGUAGES = ['fr']
 
 TO_CLEAN = ['build', 'dist', '**/*.pyc', 'reports']
 
@@ -86,6 +94,54 @@ def qa(ctx):
         error('Quality check failed')
         exit(flake8_results.return_code)
     success('Quality check OK')
+
+
+def set_po_metadata(filename, locale):
+    # Fix crowdin requiring Language with `2-digit` iso code in potfile
+    # to produce 2-digit iso code pofile
+    # Opening the catalog also allows to set extra metadata
+    with open(filename, 'rb') as infile:
+        catalog = read_po(infile, locale)
+    catalog.copyright_holder = 'Etalab'
+    catalog.msgid_bugs_address = 'data.gouv@data.gouv.fr'
+    catalog.language_team = 'Data.gouv.fr Team <data.gouv@data.gouv.fr>'
+    catalog.last_translator = 'Data.gouv.fr Team <data.gouv@data.gouv.fr>'
+    catalog.revision_date = datetime.now(LOCALTZ)
+    with open(filename, 'wb') as outfile:
+        write_po(outfile, catalog, width=80)
+
+
+@task
+def i18n(ctx, update=False):
+    '''Extract translatable strings'''
+    header(i18n.__doc__)
+
+    # Python translations
+    info('Extract python translations')
+    with ctx.cd(ROOT):
+        ctx.run('python setup.py extract_messages')
+        set_po_metadata(os.path.join(I18N_ROOT, 'recommendations.pot'), 'en')
+        for lang in LANGUAGES:
+            pofile = os.path.join(I18N_ROOT, lang, 'LC_MESSAGES', 'recommendations.po')
+            if not os.path.exists(pofile):
+                ctx.run('python setup.py init_catalog -l {}'.format(lang))
+                set_po_metadata(pofile, lang)
+            elif update:
+                ctx.run('python setup.py update_catalog -l {}'.format(lang))
+                set_po_metadata(pofile, lang)
+    success('Updated translations')
+
+
+@task
+def i18nc(ctx):
+    '''Compile translations'''
+    header(i18nc.__doc__)
+    # Plugin translations (harvesters, views...)
+    info('Compile plugin translations')
+    with ctx.cd(ROOT):
+        ctx.run('python setup.py compile_catalog')
+
+    success('Compiled translations')
 
 
 @task
