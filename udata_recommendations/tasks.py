@@ -1,6 +1,7 @@
 import logging
 import json
 import importlib.resources as pkg_resources
+from urllib.parse import urlsplit
 
 import mongoengine
 import requests
@@ -79,6 +80,7 @@ def process_dataset(source, dataset):
     log.info(f"Processing recommendations for dataset {dataset['id']}")
     valid_recos_datasets = []
     valid_recos_reuses = []
+    valid_recos_externals = []
     for reco in dataset['recommendations']:
         # default type is `dataset` for retrocompat
         reco_type = reco.get('type', 'dataset')
@@ -106,11 +108,23 @@ def process_dataset(source, dataset):
             except (Reuse.DoesNotExist, mongoengine.errors.ValidationError):
                 error(f"Recommended reuse {reco['id']} not found")
                 continue
+        elif reco_type == 'external':
+            try:
+                external = urlsplit(reco['id']).geturl()
+                valid_recos_externals.append({
+                    'id': external,
+                    'score': reco['score'],
+                    'source': source,
+                    'messages': reco['messages']
+                })
+            except (ValueError):
+                error(f"Recommended external {reco['id']} is not a valid url")
+                continue
         else:
             error(f'Unknown recommendation type {reco_type}')
             continue
 
-    if len(valid_recos_datasets) or len(valid_recos_reuses):
+    if len(valid_recos_datasets) or len(valid_recos_reuses) or len(valid_recos_externals):
         new_sources = set(target_dataset.extras.get('recommendations:sources', []))
         new_sources.add(source)
         target_dataset.extras['recommendations:sources'] = list(new_sources)
@@ -133,7 +147,17 @@ def process_dataset(source, dataset):
 
         target_dataset.extras['recommendations-reuses'] = new_recommendations
 
-    if len(valid_recos_datasets) or len(valid_recos_reuses):
+    if len(valid_recos_externals):
+        success(f"Found {len(valid_recos_externals)} new external recommendations for dataset {dataset['id']}")
+
+        merged_recommendations = valid_recos_externals + target_dataset.extras.get('recommendations-externals', [])
+        unique_recommendations = get_unique_recommendations(merged_recommendations)
+        new_recommendations = sorted(unique_recommendations, key=lambda k: k['score'], reverse=True)
+
+        target_dataset.extras['recommendations-externals'] = new_recommendations
+
+
+    if len(valid_recos_datasets) or len(valid_recos_reuses) or len(valid_recos_externals):
         target_dataset.save()
     else:
         error(f"No recommendations found for dataset {dataset['id']}")

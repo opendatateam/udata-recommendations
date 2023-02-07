@@ -1,0 +1,23 @@
+{%- if reco_reuses %}
+<div id="dataset-recommendations-reuses">
+    <h3 class="subtitle subtitle--uppercase">
+        {{ ngettext('%(num)d recommended reuse', '%(num)d recommended reuses', reco_reuses|length) }}
+    </h3>
+    <div
+        id="dataset-recommendations-reuses-container"
+        class="fr-grid-row fr-grid-row--gutters fr-mb-2w"
+    >
+        {% for reuse in reco_reuses %}
+            <div 
+                class="fr-col-lg-3 fr-col-sm-6 fr-col-12"
+                data-track-content
+                data-content-name="reuse recommendations"
+                data-content-piece="reco {{ loop.idx }}"
+                data-content-target="reuses/{{ reuse.id }}"
+            >
+                {% include theme('reuse/card.html') with context %}
+            </div>
+        {% endfor %}
+    </div>
+</div>
+{% endif -%}
