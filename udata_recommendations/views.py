@@ -45,7 +45,7 @@ def dataset_recommendations(ctx):
 
 
 @template_hook('dataset.display.after-reuses', when=has_reuse_recommendations)
-def dataset_recommendations(ctx):
+def dataset_reuse_recommendations(ctx):
     recommendations_reuses = ctx['dataset'].extras.get('recommendations-reuses', [])
 
     # Get at most n unique recommendations
@@ -72,5 +72,5 @@ def dataset_external_recommendations(ctx):
     return theme.render(
         'dataset-recommendations-externals.html',
         messages=messages,
-        id=reco_external["id"] 
+        id=reco_external["id"]
     )

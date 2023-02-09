@@ -156,7 +156,6 @@ def process_dataset(source, dataset):
 
         target_dataset.extras['recommendations-externals'] = new_recommendations
 
-
     if len(valid_recos_datasets) or len(valid_recos_reuses) or len(valid_recos_externals):
         target_dataset.save()
     else:
