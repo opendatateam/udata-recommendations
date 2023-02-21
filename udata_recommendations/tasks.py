@@ -1,7 +1,6 @@
 import logging
 import json
 import importlib.resources as pkg_resources
-from urllib.parse import urlsplit
 
 import mongoengine
 import requests
