@@ -9,6 +9,7 @@ import jsonschema
 from flask import current_app
 
 from udata.models import Dataset, Reuse
+from udata.uris import validate
 
 from udata.tasks import job
 from udata.commands import success, error
@@ -110,7 +111,7 @@ def process_dataset(source, dataset):
                 continue
         elif reco_type == 'external':
             try:
-                external = urlsplit(reco['id']).geturl()
+                external = validate(reco['id'])
                 valid_recos_externals.append({
                     'id': external,
                     'score': reco['score'],
