@@ -10,7 +10,7 @@ from udata_front.frontend import template_hook
 blueprint = Blueprint('recommendations', __name__, template_folder='templates')
 
 
-def has_recommendations(ctx):
+def has_dataset_recommendations(ctx):
     dataset = ctx['dataset']
     return dataset and dataset.extras.get('recommendations', [])
 
@@ -27,7 +27,7 @@ def has_external_recommendations(ctx):
     )
 
 
-@template_hook('dataset.display.after-files', when=has_recommendations)
+@template_hook('dataset.display.after-files', when=has_dataset_recommendations)
 def dataset_recommendations(ctx):
     recommendations = ctx['dataset'].extras.get('recommendations', [])
 
