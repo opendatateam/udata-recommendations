@@ -2,7 +2,7 @@
 
 ## Current (in progress)
 
-- Update MongoDB in CI [207](https://github.com/opendatateam/udata-recommendations/pull/207)
+- Update MongoDB in CI [259](https://github.com/opendatateam/udata-recommendations/pull/259)
 
 ## 3.1.2 (2022-12-15)
 
