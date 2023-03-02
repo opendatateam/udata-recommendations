@@ -1,6 +1,6 @@
 # Changelog
 
-## Current (in progress)
+## 3.1.3 (2023-03-02)
 
 - Nothing yet
 
