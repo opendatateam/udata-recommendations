@@ -9,7 +9,13 @@ from udata.frontend.markdown import mdstrip
 
 def render_hook(dataset):
     return render_template_string(
-        '{{ hook("dataset.display.after-description") }}',
+        '{{ hook("dataset.display.after-files") }}',
+        dataset=dataset
+    )
+
+def render_hook_reuses(dataset):
+    return render_template_string(
+        '{{ hook("dataset.display.after-reuses") }}',
         dataset=dataset
     )
 
@@ -49,11 +55,12 @@ class TestViews:
         })
 
         content = render_hook(dataset=dataset)
+        content_reuses = render_hook_reuses(dataset=dataset)
 
         assert ds1.full_title in content
         assert ds2.full_title in content
         assert ds3.full_title not in content
-        assert mdstrip(r1.title, 55) in content
+        assert mdstrip(r1.title, 55) in content_reuses
 
     @pytest.mark.options(RECOMMENDATIONS_NB_RECOMMENDATIONS=2)
     def test_view_dataset_with_recommendations_dedupe(self, datasets, reuses):
@@ -73,9 +80,10 @@ class TestViews:
         })
 
         content = render_hook(dataset=dataset)
+        content_reuses = render_hook_reuses(dataset=dataset)
 
-        assert content.count(f'href="{ds1.external_url}"') == 1
-        assert content.count(f'href="{r1.external_url}"') == 1
+        assert content.count(f'href="{ds1.display_url}"') == 1
+        assert content_reuses.count(f'href="{r1.external_url}"') == 1
         assert ds1.full_title in content
         assert ds2.full_title not in content
         assert ds3.full_title in content

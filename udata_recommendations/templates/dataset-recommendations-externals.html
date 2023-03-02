@@ -1,0 +1,17 @@
+{% from theme('macros/banner_info.html') import banner_info_lg %}
+
+{%- if messages and id %}
+<div 
+    data-track-content
+    data-content-name="dataset external"
+    data-content-piece="reco"
+    data-content-target="{{ id }}"
+>
+    {{ banner_info_lg(
+        messages.title,
+        messages.message,
+        messages.button,
+        id
+    ) }}
+</div>
+{% endif -%}
