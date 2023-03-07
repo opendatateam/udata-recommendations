@@ -1,6 +1,6 @@
 # Changelog
 
-## Current (in progress)
+## 3.1.4 (2023-03-07)
 
 - Update and compile translations [#261](https://github.com/opendatateam/udata-recommendations/pull/261) [#262](https://github.com/opendatateam/udata-recommendations/pull/262)
 
