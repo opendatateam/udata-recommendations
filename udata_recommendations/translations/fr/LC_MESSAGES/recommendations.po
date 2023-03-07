@@ -24,17 +24,17 @@ msgstr ""
 #, python-format
 msgid "%(num)d recommended reuse"
 msgid_plural "%(num)d recommended reuses"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%(num)d réutilisation recommandée"
+msgstr[1] "%(num)d réutilisations recommandées"
 
 #: udata_recommendations/templates/dataset-recommendations.html:7
 msgid "All reuses"
-msgstr ""
+msgstr "Toutes les réutilisations"
 
 #: udata_recommendations/templates/dataset-recommendations.html:30
 #, python-format
 msgid "%(num)d recommended dataset"
 msgid_plural "%(num)d recommended datasets"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%(num)d jeu de données recommandé"
+msgstr[1] "%(num)d jeux de données recommandés"
 
