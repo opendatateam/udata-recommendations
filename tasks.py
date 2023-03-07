@@ -144,7 +144,7 @@ def i18nc(ctx):
     success('Compiled translations')
 
 
-@task
+@task(i18nc)
 def dist(ctx, buildno=None):
     '''Package for distribution'''
     header('Building a distribuable package')
