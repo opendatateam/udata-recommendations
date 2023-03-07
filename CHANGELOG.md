@@ -2,11 +2,11 @@
 
 ## Current (in progress)
 
-- Nothing yet
+- Update and compile translations [#261](https://github.com/opendatateam/udata-recommendations/pull/261) [#262](https://github.com/opendatateam/udata-recommendations/pull/262)
 
 ## 3.1.3 (2023-03-02)
 
-- Nothing yet
+- Recommendations for new dataset page [#256](https://github.com/opendatateam/udata-recommendations/pull/256)
 
 ## 3.1.2 (2022-12-15)
 
