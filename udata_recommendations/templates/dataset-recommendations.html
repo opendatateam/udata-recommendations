@@ -9,7 +9,7 @@
                 class="fr-mb-2w"
                 data-track-content
                 data-content-name="dataset recommendations"
-                data-content-piece="dataset.full_title"
+                data-content-piece="{{ dataset.full_title }}"
                 data-content-target="{{ url_for('datasets.show', dataset=dataset) }}"
             >
                 {% include theme('dataset/card-sm.html') with context %}
