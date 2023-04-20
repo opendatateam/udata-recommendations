@@ -12,8 +12,8 @@
                 class="fr-col-lg-3 fr-col-sm-6 fr-col-12"
                 data-track-content
                 data-content-name="reuse recommendations"
-                data-content-piece="reco {{ loop.idx }}"
-                data-content-target="reuses/{{ reuse.id }}"
+                data-content-piece="{{ reuse.title }}"
+                data-content-target="{{ url_for('reuses.show', reuse=reuse, _external=True) }}"
             >
                 {% include theme('reuse/card.html') with context %}
             </div>
