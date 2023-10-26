@@ -3,6 +3,7 @@
 ## Current (in progress)
 
 - Update Matomo content tracking data-attributes [#263](https://github.com/opendatateam/udata-recommendations/pull/263)
+- Upgrade test and develop dependencies [#264](https://github.com/opendatateam/udata-recommendations/pull/264)
 
 ## 3.1.4 (2023-03-07)
 
