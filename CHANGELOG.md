@@ -1,6 +1,6 @@
 # Changelog
 
-## Current (in progress)
+## 3.1.6 (2024-07-30)
 
 - Migrate to Python 3.11 following `udata` dependencies upgrade [#265](https://github.com/opendatateam/udata-recommendations/pull/265)
 - Unpin jsonschema deps [#266](https://github.com/opendatateam/udata-recommendations/pull/266)
