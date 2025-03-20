@@ -4,7 +4,7 @@ version: 2
 jobs:
   build:
     docker:
-      - image: udata/circleci:2-alpine
+      - image: udata/circleci:py3.11-bookworm
       - image: mongo:6.0.4
       - image: redis:alpine
       - image: udata/elasticsearch:2.4.5
@@ -66,7 +66,7 @@ jobs:
 
   publish:
     docker:
-      - image: udata/circleci:2-alpine
+      - image: udata/circleci:py3.11-bookworm
     steps:
       - attach_workspace:
           at: .
