@@ -2,7 +2,7 @@
 
 ## Current (in progress)
 
-- Nothing yet
+- Update jsonschema dependency as well as develop and test deps [#267](https://github.com/opendatateam/udata-recommendations/pull/267)
 
 ## 3.1.6 (2024-07-30)
 
