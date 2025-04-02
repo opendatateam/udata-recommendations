@@ -1,6 +1,6 @@
 # Changelog
 
-## Current (in progress)
+## 3.1.7 (2025-04-02)
 
 - Update jsonschema dependency as well as develop and test deps [#267](https://github.com/opendatateam/udata-recommendations/pull/267)
 
